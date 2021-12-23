@@ -1,24 +1,24 @@
 #include <stdio.h>
 
 #include "tasks.h"
-#include "timer.h"
+#include "timestamps.h"
 
 int main(int argc, char **argv) {
-   trac_task_list_t task_list = new_task_list();
-   new_toplevel_task(&task_list, "top1");
-   new_toplevel_task(&task_list, "top2");
-   new_toplevel_task(&task_list, "top3");
+   trac_task_tree_t task_tree = new_task_tree();
+   new_toplevel_task(&task_tree, "top1");
+   new_toplevel_task(&task_tree, "top2");
+   new_toplevel_task(&task_tree, "top3");
 
-   new_task(&task_list, 1, "child1");
-   new_task(&task_list, 1, "child2");
-   new_task(&task_list, 3, "child3");
-   new_task(&task_list, 0, "child4");
+   new_task(&task_tree, 1, "child1");
+   new_task(&task_tree, 1, "child2");
+   new_task(&task_tree, 3, "child3");
+   new_task(&task_tree, 0, "child4");
 
 
-   remove_task(&task_list, 3);
+   remove_task(&task_tree, 3);
 
-   print_task_tree(task_list);
-   free_task_list(&task_list);
+   print_task_tree(task_tree);
+   free_task_tree(&task_tree);
 
    trac_timestamp_t ts = get_current_timestamp();
    printf("\n");
