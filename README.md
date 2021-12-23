@@ -1,2 +1,2 @@
-# TimeTracker
-A free time tracker for tasks
+# TRAC
+TRAC (Time Recorder and Activity Controler) is a free GTK-C based task tracking program.
