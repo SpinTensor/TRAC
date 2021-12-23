@@ -15,54 +15,54 @@ trac_task_list_t new_task_list() {
    return task_list;
 }
 
-int new_task(trac_task_list_t *task_list, int parentTaskID, char *name) {
+int new_task(trac_task_list_t *task_list, int parentTaskidx, char *name) {
    // search for a free spot
-   int newTaskID = -1;
+   int newTaskidx = -1;
    bool free_task = false;
-   while (free_task == false && (newTaskID+1)<task_list->ntasks) {
-      newTaskID++;
-      free_task = (!task_list->tasks[newTaskID].valid);
+   while (free_task == false && (newTaskidx+1)<task_list->ntasks) {
+      newTaskidx++;
+      free_task = (!task_list->tasks[newTaskidx].valid);
    }
    // if no free spot was found reallocate
    if (!free_task) {
-      newTaskID = task_list->ntasks;
+      newTaskidx = task_list->ntasks;
       task_list->ntasks++;
       task_list->tasks = (trac_task_t*) realloc(task_list->tasks, task_list->ntasks*sizeof(trac_task_t));
    }
 
    // fill in the new task info
-   task_list->tasks[newTaskID].ID = newTaskID;
-   task_list->tasks[newTaskID].valid = true;
-   task_list->tasks[newTaskID].name = strdup(name);
-   task_list->tasks[newTaskID].parentTaskID = parentTaskID;
-   if (parentTaskID < 0) {
-      task_list->tasks[newTaskID].level = 0;
+   task_list->tasks[newTaskidx].idx = newTaskidx;
+   task_list->tasks[newTaskidx].valid = true;
+   task_list->tasks[newTaskidx].name = strdup(name);
+   task_list->tasks[newTaskidx].parentTaskidx = parentTaskidx;
+   if (parentTaskidx < 0) {
+      task_list->tasks[newTaskidx].level = 0;
    } else {
-      task_list->tasks[newTaskID].level = task_list->tasks[parentTaskID].level + 1;
+      task_list->tasks[newTaskidx].level = task_list->tasks[parentTaskidx].level + 1;
       // register as child task of parent task
-      task_list->tasks[parentTaskID].nchildTasks++;
-      task_list->tasks[parentTaskID].childTaskIDs = (int*)
-         realloc(task_list->tasks[parentTaskID].childTaskIDs, task_list->tasks[parentTaskID].nchildTasks*sizeof(int));
-      task_list->tasks[parentTaskID].childTaskIDs[task_list->tasks[parentTaskID].nchildTasks-1] = newTaskID;
+      task_list->tasks[parentTaskidx].nchildTasks++;
+      task_list->tasks[parentTaskidx].childTaskidxs = (int*)
+         realloc(task_list->tasks[parentTaskidx].childTaskidxs, task_list->tasks[parentTaskidx].nchildTasks*sizeof(int));
+      task_list->tasks[parentTaskidx].childTaskidxs[task_list->tasks[parentTaskidx].nchildTasks-1] = newTaskidx;
    }
-   task_list->tasks[newTaskID].nchildTasks = 0;
-   task_list->tasks[newTaskID].childTaskIDs = NULL;
-   return newTaskID;
+   task_list->tasks[newTaskidx].nchildTasks = 0;
+   task_list->tasks[newTaskidx].childTaskidxs = NULL;
+   return newTaskidx;
 }
 
 int new_toplevel_task(trac_task_list_t *task_list, char *name) {
    return new_task(task_list, -1, name);
 }
 
-void remove_task(trac_task_list_t *task_list, int ID) {
-   trac_task_t *task = task_list->tasks+ID;
+void remove_task(trac_task_list_t *task_list, int idx) {
+   trac_task_t *task = task_list->tasks+idx;
    if (task->nchildTasks > 0) {
       // recursively remove all child tasks and their children
-      for (int i=0; i<task->nchildTasks; i++) {
-         remove_task(task_list, task->childTaskIDs[i]);
+      for (int itask=0; itask<task->nchildTasks; itask++) {
+         remove_task(task_list, task->childTaskidxs[itask]);
       }
-      free(task->childTaskIDs);
-      task->childTaskIDs = NULL;
+      free(task->childTaskidxs);
+      task->childTaskidxs = NULL;
       task->nchildTasks = 0;
    }
    task->valid = false;
@@ -71,12 +71,13 @@ void remove_task(trac_task_list_t *task_list, int ID) {
    if (task->level > 0) {
       // remove entry from parent child list
       int offset = 0;
-      task_list->tasks[task->parentTaskID].nchildTasks--;
-      for (int i=0; i<task_list->tasks[task->parentTaskID].nchildTasks; i++) {
-         if (task_list->tasks[task->parentTaskID].childTaskIDs[i] == ID) {
+      task_list->tasks[task->parentTaskidx].nchildTasks--;
+      for (int itask=0; itask<task_list->tasks[task->parentTaskidx].nchildTasks; itask++) {
+         if (task_list->tasks[task->parentTaskidx].childTaskidxs[itask] == idx) {
             offset++;
          }
-         task_list->tasks[task->parentTaskID].childTaskIDs[i] = task_list->tasks[task->parentTaskID].childTaskIDs[i+offset];
+         task_list->tasks[task->parentTaskidx].childTaskidxs[itask] =
+            task_list->tasks[task->parentTaskidx].childTaskidxs[itask+offset];
       }
    }
 }
@@ -96,14 +97,14 @@ void free_task_list(trac_task_list_t *task_list) {
 #ifdef _DEBUG
 void print_task(trac_task_t task) {
    printf("name: %s\n", task.name);
-   printf("ID: %d\n", task.ID);
+   printf("idx: %d\n", task.idx);
    printf("level: %d\n", task.level);
-   printf("parenttaskID: %d\n", task.parentTaskID);
+   printf("parenttaskidx: %d\n", task.parentTaskidx);
    printf("nchildTasks: %d\n", task.nchildTasks);
    if (task.nchildTasks > 0) {
-      printf("childTaskIDs:");
-      for (int i=0; i<task.nchildTasks; i++) {
-         printf(" %d", task.childTaskIDs[i]);
+      printf("childTaskidxs:");
+      for (int itask=0; itask<task.nchildTasks; itask++) {
+         printf(" %d", task.childTaskidxs[itask]);
       }
       printf("\n");
    }
@@ -124,26 +125,26 @@ void print_indent(int level) {
    }
 }
 
-void print_task_branch(trac_task_t *tasks, int ID) {
-   print_indent(tasks[ID].level);
-   printf("name: %s\n", tasks[ID].name);
-   print_indent(tasks[ID].level);
-   printf("ID: %d\n", tasks[ID].ID);
-   print_indent(tasks[ID].level);
-   printf("level: %d\n", tasks[ID].level);
-   print_indent(tasks[ID].level);
-   printf("parenttaskID: %d\n", tasks[ID].parentTaskID);
-   print_indent(tasks[ID].level);
-   printf("nchildTasks: %d\n", tasks[ID].nchildTasks);
-   if (tasks[ID].nchildTasks > 0) {
-      print_indent(tasks[ID].level);
-      printf("childTaskIDs:");
-      for (int i=0; i<tasks[ID].nchildTasks; i++) {
-         printf(" %d", tasks[ID].childTaskIDs[i]);
+void print_task_branch(trac_task_t *tasks, int idx) {
+   print_indent(tasks[idx].level);
+   printf("name: %s\n", tasks[idx].name);
+   print_indent(tasks[idx].level);
+   printf("idx: %d\n", tasks[idx].idx);
+   print_indent(tasks[idx].level);
+   printf("level: %d\n", tasks[idx].level);
+   print_indent(tasks[idx].level);
+   printf("parenttaskidx: %d\n", tasks[idx].parentTaskidx);
+   print_indent(tasks[idx].level);
+   printf("nchildTasks: %d\n", tasks[idx].nchildTasks);
+   if (tasks[idx].nchildTasks > 0) {
+      print_indent(tasks[idx].level);
+      printf("childTaskidxs:");
+      for (int itask=0; itask<tasks[idx].nchildTasks; itask++) {
+         printf(" %d", tasks[idx].childTaskidxs[itask]);
       }
       printf("\n");
-      for (int ichild=0; ichild<tasks[ID].nchildTasks; ichild++) {
-         print_task_branch(tasks, tasks[ID].childTaskIDs[ichild]);
+      for (int itask=0; itask<tasks[idx].nchildTasks; itask++) {
+         print_task_branch(tasks, tasks[idx].childTaskidxs[itask]);
       }
    }
 }
