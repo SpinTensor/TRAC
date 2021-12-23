@@ -12,6 +12,8 @@ struct trac_task_type {
    int parentTaskidx;
    int nchildTasks;
    int *childTaskidxs;
+   int incl_time;
+   int excl_time;
 };
 
 typedef struct trac_task_tree_type trac_task_tree_t;
@@ -24,6 +26,9 @@ trac_task_tree_t new_task_tree();
 
 int new_task(trac_task_tree_t *task_tree, int parentTaskidx, char *name);
 int new_toplevel_task(trac_task_tree_t *task_tree, char *name);
+
+void calc_incl_time(trac_task_tree_t *task_tree, int idx);
+void calc_incl_time_tree(trac_task_tree_t *task_tree);
 
 void remove_task(trac_task_tree_t *task_tree, int idx);
 void free_task_tree(trac_task_tree_t *task_tree);

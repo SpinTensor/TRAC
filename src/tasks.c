@@ -35,6 +35,8 @@ int new_task(trac_task_tree_t *task_tree, int parentTaskidx, char *name) {
    task_tree->tasks[newTaskidx].valid = true;
    task_tree->tasks[newTaskidx].name = strdup(name);
    task_tree->tasks[newTaskidx].parentTaskidx = parentTaskidx;
+   task_tree->tasks[newTaskidx].incl_time = 0;
+   task_tree->tasks[newTaskidx].excl_time = 0;
    if (parentTaskidx < 0) {
       task_tree->tasks[newTaskidx].level = 0;
    } else {
@@ -53,6 +55,28 @@ int new_task(trac_task_tree_t *task_tree, int parentTaskidx, char *name) {
 int new_toplevel_task(trac_task_tree_t *task_tree, char *name) {
    return new_task(task_tree, -1, name);
 }
+
+void calc_incl_time(trac_task_t *tasks, int idx) {
+   tasks[idx].incl_time = tasks[idx].excl_time;
+   if (tasks[idx].nchildTasks > 0) {
+      tasks[idx].incl_time = 0;
+      for (int itask=0; itask<task_tree.ntasks; itask++) {
+         if (task_tree.tasks[itask].valid) {
+            calc_incl_time(tasks, itask);
+            tasks[idx].incl_time += tasks[itask].incl_time;
+         }
+      }
+   }
+}
+
+void calc_incl_time_tree(trac_task_tree_t *task_tree) {
+   for (int itask=0; itask<task_tree.ntasks; itask++) {
+      if (task_tree.tasks[itask].level == 0 && task_tree.tasks[itask].valid) {
+         calc_incl_time(task_tree.tasks, itask);
+      }
+   }
+}
+
 
 void remove_task(trac_task_tree_t *task_tree, int idx) {
    trac_task_t *task = task_tree->tasks+idx;
