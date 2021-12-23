@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "timer.h"
+#include "timestamps.h"
 
 trac_timestamp_t get_current_timestamp() {
    trac_timestamp_t timestamp;
