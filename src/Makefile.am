@@ -9,7 +9,8 @@
 
 bin_PROGRAMS = trac
 
-trac_SOURCES = test.c
+trac_SOURCES = test.c \
+	       tasks.c
 #trac_CPPFLAGS = ${external_includes}
 trac_CFLAGS  = @GTK_CFLAGS@ -g -Wall -Wextra -Wpedantic
 trac_LDFLAGS = @GTK_LIBS@ -rdynamic -lm
