@@ -119,40 +119,40 @@ void free_task_tree(trac_task_tree_t *task_tree) {
 }
 
 #ifdef _DEBUG
-void print_indent(int level) {
+void print_indent(FILE *io_handle, int level) {
    for (int ilevel=0; ilevel<level; ilevel++) {
-      printf("   ");
+      fprintf(io_handle, "   ");
    }
 }
 
-void print_task_branch(trac_task_t *tasks, int idx) {
-   print_indent(tasks[idx].level);
-   printf("name: %s\n", tasks[idx].name);
-   print_indent(tasks[idx].level);
-   printf("idx: %d\n", tasks[idx].idx);
-   print_indent(tasks[idx].level);
-   printf("level: %d\n", tasks[idx].level);
-   print_indent(tasks[idx].level);
-   printf("parenttaskidx: %d\n", tasks[idx].parentTaskidx);
-   print_indent(tasks[idx].level);
-   printf("nchildTasks: %d\n", tasks[idx].nchildTasks);
+void print_task_branch(FILE *io_handle, trac_task_t *tasks, int idx) {
+   print_indent(io_handle, tasks[idx].level);
+   fprintf(io_handle, "name: %s\n", tasks[idx].name);
+   print_indent(io_handle, tasks[idx].level);
+   fprintf(io_handle, "idx: %d\n", tasks[idx].idx);
+   print_indent(io_handle, tasks[idx].level);
+   fprintf(io_handle, "level: %d\n", tasks[idx].level);
+   print_indent(io_handle, tasks[idx].level);
+   fprintf(io_handle, "parenttaskidx: %d\n", tasks[idx].parentTaskidx);
+   print_indent(io_handle, tasks[idx].level);
+   fprintf(io_handle, "nchildTasks: %d\n", tasks[idx].nchildTasks);
    if (tasks[idx].nchildTasks > 0) {
-      print_indent(tasks[idx].level);
-      printf("childTaskidxs:");
+      print_indent(io_handle, tasks[idx].level);
+      fprintf(io_handle, "childTaskidxs:");
       for (int itask=0; itask<tasks[idx].nchildTasks; itask++) {
-         printf(" %d", tasks[idx].childTaskidxs[itask]);
+         fprintf(io_handle, " %d", tasks[idx].childTaskidxs[itask]);
       }
-      printf("\n");
+      fprintf(io_handle, "\n");
       for (int itask=0; itask<tasks[idx].nchildTasks; itask++) {
-         print_task_branch(tasks, tasks[idx].childTaskidxs[itask]);
+         print_task_branch(io_handle, tasks, tasks[idx].childTaskidxs[itask]);
       }
    }
 }
 
-void print_task_tree(trac_task_tree_t task_tree) {
+void print_task_tree(FILE *io_handle, trac_task_tree_t task_tree) {
    for (int itask=0; itask<task_tree.ntasks; itask++) {
       if (task_tree.tasks[itask].level == 0 && task_tree.tasks[itask].valid) {
-         print_task_branch(task_tree.tasks, itask);
+         print_task_branch(io_handle, task_tree.tasks, itask);
       }
    }
 }

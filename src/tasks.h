@@ -3,6 +3,10 @@
 
 #include <stdbool.h>
 
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 typedef struct trac_task_type trac_task_t;
 struct trac_task_type {
    int idx;
@@ -34,9 +38,9 @@ void remove_task(trac_task_tree_t *task_tree, int idx);
 void free_task_tree(trac_task_tree_t *task_tree);
 
 #ifdef _DEBUG
-void print_indent(int level);
-void print_task_branch(trac_task_t *tasks, int idx);
-void print_task_tree(trac_task_tree_t task_tree);
+void print_indent(FILE *io_handle, int level);
+void print_task_branch(FILE *io_handle, trac_task_t *tasks, int idx);
+void print_task_tree(FILE *io_handle, trac_task_tree_t task_tree);
 #endif
 
 #endif
