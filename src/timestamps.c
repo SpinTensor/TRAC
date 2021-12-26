@@ -74,6 +74,22 @@ int get_timestamp_day(trac_timestamp_t timestamp) {
    return (int) timestamp.date.tm_mday;
 }
 
+char *get_timestamp_day_str(trac_timestamp_t timestamp) {
+   // Use Keith-Craver method to determine weekday
+   char *day_str[] = {"Sunday",
+                      "Monday",
+                      "Tuesday",
+                      "Wednesday",
+                      "Thursday",
+                      "Friday",
+                      "Saturday"};
+   int d = get_timestamp_day(timestamp);
+   int m = get_timestamp_month(timestamp);
+   int y = get_timestamp_year(timestamp);
+   int weekday  = (d += m < 3 ? y-- : y - 2, 23*m/9 + d + 4 + y/4- y/100 + y/400)%7;
+   return day_str[weekday];
+}
+
 int get_timestamp_hour(trac_timestamp_t timestamp) {
    return (int) timestamp.date.tm_hour;
 }

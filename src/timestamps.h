@@ -23,6 +23,7 @@ int get_timestamp_year(trac_timestamp_t timestamp);
 int get_timestamp_month(trac_timestamp_t timestamp);
 char *get_timestamp_month_str(int month_of_year);
 int get_timestamp_day(trac_timestamp_t timestamp);
+char *get_timestamp_day_str(trac_timestamp_t timestamp);
 int get_timestamp_hour(trac_timestamp_t timestamp);
 int get_timestamp_minute(trac_timestamp_t timestamp);
 int get_timestamp_second(trac_timestamp_t timestamp);
