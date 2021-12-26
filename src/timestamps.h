@@ -3,6 +3,10 @@
 
 #include <time.h>
 
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 typedef struct trac_timestamp_type trac_timestamp_t;
 // record the time since the epoch
 struct trac_timestamp_type {
@@ -21,5 +25,10 @@ int get_timestamp_day(trac_timestamp_t timestamp);
 int get_timestamp_hour(trac_timestamp_t timestamp);
 int get_timestamp_minute(trac_timestamp_t timestamp);
 int get_timestamp_second(trac_timestamp_t timestamp);
+
+#ifdef _DEBUG
+void print_timestamp_seconds_since_epoch(FILE *io_handle, trac_timestamp_t timestamp);
+void print_timestamp_date(FILE *io_handle, trac_timestamp_t timestamp);
+#endif
 
 #endif

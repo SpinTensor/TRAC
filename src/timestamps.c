@@ -3,6 +3,10 @@
 
 #include "timestamps.h"
 
+#ifdef _DEBUG
+#include <stdio.h>
+#endif
+
 trac_timestamp_t get_current_timestamp() {
    trac_timestamp_t timestamp;
    timestamp.seconds_since_epoch = time(NULL);
@@ -65,3 +69,19 @@ int get_timestamp_minute(trac_timestamp_t timestamp) {
 int get_timestamp_second(trac_timestamp_t timestamp) {
    return (int) timestamp.date.tm_sec;
 }
+
+#ifdef _DEBUG
+void print_timestamp_seconds_since_epoch(FILE *io_handle, trac_timestamp_t timestamp) {
+   fprintf(io_handle, "%lld", get_timestamp_seconds_since_epoch(timestamp));
+}
+
+void print_timestamp_date(FILE *io_handle, trac_timestamp_t timestamp) {
+   fprintf(io_handle, "%02d:%02d:%02d %02d.%02d.%04d",
+           get_timestamp_hour(timestamp),
+           get_timestamp_minute(timestamp),
+           get_timestamp_second(timestamp),
+           get_timestamp_day(timestamp),
+           get_timestamp_month(timestamp),
+           get_timestamp_year(timestamp));
+}
+#endif
