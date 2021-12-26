@@ -80,10 +80,23 @@ void calc_incl_time_tree(trac_task_tree_t *task_tree) {
 
 void remove_task(trac_task_tree_t *task_tree, int idx) {
    trac_task_t *task = task_tree->tasks+idx;
+   remove_all_child_tasks(task_tree, idx);
+   if (task->level > 0) {
+      // remove entry from parent child list
+      task_tree->tasks[task->parentTaskidx].nchildTasks--;
+      for (int itask=idx; itask<task_tree->tasks[task->parentTaskidx].nchildTasks; itask++) {
+         task_tree->tasks[task->parentTaskidx].childTaskidxs[itask] =
+            task_tree->tasks[task->parentTaskidx].childTaskidxs[itask+1];
+      }
+   }
+}
+
+void remove_all_child_tasks(trac_task_tree_t *task_tree, int idx) {
+   trac_task_t *task = task_tree->tasks+idx;
    if (task->nchildTasks > 0) {
       // recursively remove all child tasks and their children
       for (int itask=0; itask<task->nchildTasks; itask++) {
-         remove_task(task_tree, task->childTaskidxs[itask]);
+         remove_all_child_tasks(task_tree, task->childTaskidxs[itask]);
       }
       free(task->childTaskidxs);
       task->childTaskidxs = NULL;
@@ -92,18 +105,6 @@ void remove_task(trac_task_tree_t *task_tree, int idx) {
    task->valid = false;
    free(task->name);
    task->name = NULL;
-   if (task->level > 0) {
-      // remove entry from parent child list
-      int offset = 0;
-      task_tree->tasks[task->parentTaskidx].nchildTasks--;
-      for (int itask=0; itask<task_tree->tasks[task->parentTaskidx].nchildTasks; itask++) {
-         if (task_tree->tasks[task->parentTaskidx].childTaskidxs[itask] == idx) {
-            offset++;
-         }
-         task_tree->tasks[task->parentTaskidx].childTaskidxs[itask] =
-            task_tree->tasks[task->parentTaskidx].childTaskidxs[itask+offset];
-      }
-   }
 }
 
 void free_task_tree(trac_task_tree_t *task_tree) {
