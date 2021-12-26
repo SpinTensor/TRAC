@@ -21,6 +21,7 @@ trac_timestamp_t set_timestamp_date(int year, int month, int day, int hour, int 
 unsigned long long get_timestamp_seconds_since_epoch(trac_timestamp_t timestamp);
 int get_timestamp_year(trac_timestamp_t timestamp);
 int get_timestamp_month(trac_timestamp_t timestamp);
+char *get_timestamp_month_str(int month_of_year);
 int get_timestamp_day(trac_timestamp_t timestamp);
 int get_timestamp_hour(trac_timestamp_t timestamp);
 int get_timestamp_minute(trac_timestamp_t timestamp);

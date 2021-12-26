@@ -54,6 +54,22 @@ int get_timestamp_month(trac_timestamp_t timestamp) {
    return (int) timestamp.date.tm_mon;
 }
 
+char *get_timestamp_month_str(int month_of_year) {
+   char *month_strs[] = {"January",
+                         "February",
+                         "March",
+                         "April",
+                         "May",
+                         "June",
+                         "July",
+                         "August",
+                         "September",
+                         "October",
+                         "November",
+                         "December"};
+   return month_strs[month_of_year-1];
+}
+
 int get_timestamp_day(trac_timestamp_t timestamp) {
    return (int) timestamp.date.tm_mday;
 }
