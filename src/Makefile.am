@@ -12,7 +12,9 @@ bin_PROGRAMS = trac
 trac_SOURCES = test.c \
 	       tasks.c \
 	       segments.c \
-	       timestamps.c
+	       timestamps.c \
+	       store_history.c \
+	       load_history.c
 #trac_CPPFLAGS = ${external_includes}
 trac_CFLAGS  = @GTK_CFLAGS@ -g -Wall -Wextra -Wpedantic
 trac_LDFLAGS = @GTK_LIBS@ -rdynamic -lm
