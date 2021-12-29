@@ -128,22 +128,8 @@ void print_indent(FILE *io_handle, int level) {
 
 void print_task_branch(FILE *io_handle, trac_task_t *tasks, int idx) {
    print_indent(io_handle, tasks[idx].level);
-   fprintf(io_handle, "name: %s\n", tasks[idx].name);
-   print_indent(io_handle, tasks[idx].level);
-   fprintf(io_handle, "idx: %d\n", tasks[idx].idx);
-   print_indent(io_handle, tasks[idx].level);
-   fprintf(io_handle, "level: %d\n", tasks[idx].level);
-   print_indent(io_handle, tasks[idx].level);
-   fprintf(io_handle, "parenttaskidx: %d\n", tasks[idx].parentTaskidx);
-   print_indent(io_handle, tasks[idx].level);
-   fprintf(io_handle, "nchildTasks: %d\n", tasks[idx].nchildTasks);
+   fprintf(io_handle, "%d: %s\n", tasks[idx].idx, tasks[idx].name);
    if (tasks[idx].nchildTasks > 0) {
-      print_indent(io_handle, tasks[idx].level);
-      fprintf(io_handle, "childTaskidxs:");
-      for (int itask=0; itask<tasks[idx].nchildTasks; itask++) {
-         fprintf(io_handle, " %d", tasks[idx].childTaskidxs[itask]);
-      }
-      fprintf(io_handle, "\n");
       for (int itask=0; itask<tasks[idx].nchildTasks; itask++) {
          print_task_branch(io_handle, tasks, tasks[idx].childTaskidxs[itask]);
       }
