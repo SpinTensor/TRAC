@@ -9,10 +9,12 @@
 
 bin_PROGRAMS = trac
 
-trac_SOURCES = test.c \
+trac_SOURCES = trac.c \
+	       cmd_options.c \
 	       tasks.c \
 	       segments.c \
 	       timestamps.c \
+	       tracdir.c \
 	       store_history.c \
 	       load_history.c
 #trac_CPPFLAGS = ${external_includes}
